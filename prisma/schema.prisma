@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") 
+}
+
+model User {
+  id              String    @id @default(uuid())
+  name            String
+  email           String   @unique
+  emailVerified   DateTime?
+  image           String?
+  hashedPassword  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  favoriteIds     String[]  // Postgres supports arrays, so no @db.ObjectId needed
+
+  // Relations
+  accounts        Account[]
+  listings        Listing[]
+  reservations    Reservation[]
+  languageAssistants LanguageAssistant[]
+  itineraries     Itinerary[]
+  financialTrackers FinancialTracker[]
+}
+
+model Account {
+  id                String   @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refreshToken      String? 
+  accessToken       String? 
+  expiresAt         Int?
+  tokenType         String?
+  scope             String?
+  idToken           String? 
+  sessionState      String?
+  createdAt         DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Listing {
+  id             String       @id @default(uuid())
+  title          String
+  description    String
+  imageSrc       String
+  category       String
+  roomCount      Int
+  bathroomCount  Int
+  guestCount     Int
+  locationValue  String
+  price          Int
+  createdAt      DateTime     @default(now())
+
+  // Relations
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reservations   Reservation[]
+}
+
+model Reservation {
+  id          String   @id @default(uuid())
+  userId      String
+  listingId   String
+  startDate   DateTime
+  endDate     DateTime
+  totalPrice  Int
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing    Listing    @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model LanguageAssistant {
+  id              String   @id @default(uuid())
+  userId          String
+  type            String  // Enum-like field; add validation at the application level
+  sourceLanguage  String
+  targetLanguage  String
+  activityDetails String
+  createdAt       DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Itinerary {
+  id            String   @id @default(uuid())
+  userId        String
+  startDate     DateTime
+  endDate       DateTime
+  destination   String
+  activities    String
+  createdAt     DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FinancialTracker {
+  id              String   @id @default(uuid())
+  userId          String
+  expenseCategory String   
+  amount          Int
+  note            String?
+  expenseDate     DateTime
+  createdAt       DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
