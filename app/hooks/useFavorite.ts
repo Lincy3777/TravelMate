@@ -3,7 +3,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { toast } from "react-toastify";
-import useLoginModel from "./useLoginModal";
+import useLoginModal from "./useLoginModal";
 
 type Props = {
   listingId: string;
@@ -12,7 +12,7 @@ type Props = {
 
 function useFavorite({ listingId, currentUser }: Props) {
   const router = useRouter();
-  const loginModel = useLoginModel();
+  const loginModel = useLoginModal();
 
   const hasFavorite = useMemo(() => {
     const list = currentUser?.favoriteIds || [];

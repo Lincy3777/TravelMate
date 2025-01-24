@@ -15,6 +15,7 @@ import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
 import { categories } from "../navbar/Categories";
 import Modal from "./modal";
+import AvatarUploadPage from "../inputs/ImageUpload";
 
 type Props = {};
 

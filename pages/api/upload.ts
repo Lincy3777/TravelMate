@@ -1,19 +1,31 @@
-// import { NextResponse } from "next/server";
-// import { createBlob } from "@vercel/blob";
+// src/app/api/avatar/upload/route.ts
+import { put } from '@vercel/blob';
+import { NextResponse } from 'next/server';
 
-// export async function POST(req: Request) {
-//   const formData = await req.formData();
-//   const file = formData.get("file") as File;
+export async function POST(request: Request): Promise<NextResponse> {
+  const { searchParams } = new URL(request.url);
+  const filename = searchParams.get('filename');
 
-//   if (!file) {
-//     return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
-//   }
+  // Check if filename exists
+  if (!filename) {
+    return NextResponse.json({ error: 'Filename is required' }, { status: 400 });
+  }
 
-//   try {
-//     const { url } = await createBlob(file, { public: true });
-//     return NextResponse.json({ url });
-//   } catch (error) {
-//     console.error("Upload Error:", error);
-//     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
-//   }
-// }
+  // Ensure request body is not null
+  const body = request.body;
+  if (!body) {
+    return NextResponse.json({ error: 'Request body is empty' }, { status: 400 });
+  }
+
+  // Upload the file to Vercel Blob
+  try {
+    const blob = await put(filename, body, {
+      access: 'public',
+    });
+
+    return NextResponse.json(blob);
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+  }
+}
