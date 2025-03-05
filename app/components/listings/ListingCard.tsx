@@ -1,8 +1,7 @@
 "use client";
 
 import useCountries from "@/app/hooks/useCountries";
-import { safeUser } from "@/app/types";
-import { Listing, Reservation } from "@prisma/client";
+import { safeListing, SafeReservation, safeUser } from "@/app/types";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { format } from 'date-fns';
@@ -12,8 +11,8 @@ import Button from "../Button";
 import { motion } from "framer-motion";
 
 interface ListingCardProps{
-    data: Listing;
-    reservation?: Reservation;
+    data: safeListing;
+    reservation?: SafeReservation;
     onAction?: (id:string) =>void;
     disabled?: boolean;
     actionLabel?: string;
@@ -40,7 +39,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
             return;
         }
         onAction?.(actionId);
-       },[onAction, actionId]
+       },[onAction, actionId,disabled]
     );
 
     const price = useMemo(() =>{
@@ -110,5 +109,3 @@ const ListingCard: React.FC<ListingCardProps> = ({
 
 export default ListingCard;
 
-
-//5:06:41  ----figure out cloudinary thing and authentication

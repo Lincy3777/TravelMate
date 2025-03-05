@@ -17,6 +17,7 @@ model User {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   favoriteIds     String[]  // Postgres supports arrays, so no @db.ObjectId needed
+  sessions      Session[]
 
   // Relations
   accounts        Account[]
@@ -65,6 +66,17 @@ model Listing {
   userId         String
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   reservations   Reservation[]
+}
+
+// Session model
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
 model Reservation {

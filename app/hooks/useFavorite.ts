@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { toast } from "react-toastify";
 import useLoginModal from "./useLoginModal";
-
+///////////////////////////////////
 type Props = {
   listingId: string;
   currentUser?: safeUser | null;
@@ -44,7 +44,7 @@ function useFavorite({ listingId, currentUser }: Props) {
         toast.error("Something Went Wrong");
       }
     },
-    [currentUser, hasFavorite, listingId, loginModel]
+    [currentUser, hasFavorite, listingId, loginModel,router]
   );
 
   return {

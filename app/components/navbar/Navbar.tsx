@@ -1,5 +1,6 @@
 'use client';
 
+import { Session } from "next-auth";
 import Container from "../Container";
 import Categories from "./Categories";
 import Logo from "./Logo";
@@ -9,11 +10,11 @@ import UserMenu from "./UserMenu";
 import { safeUser } from "@/app/types";
 
 interface NavbarProps {
-    currentUser?: safeUser | null;
+    session?: Session | null;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
-    currentUser
+    session
 }) =>{
     return(
         <div className="fixed w-full bg-white z-10 shadow-sm">
@@ -23,7 +24,7 @@ const Navbar: React.FC<NavbarProps> = ({
                         <Logo />
                         <TabSearch />
                         <Search />
-                        <UserMenu currentUser={currentUser} />
+                        <UserMenu session={session} />
                     </div>
                 </Container>
             </div>

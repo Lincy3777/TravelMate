@@ -9,6 +9,9 @@ import ToasterProvider from "./providers/ToasterProvider";
 import LoginModal from "./components/modals/LoginModal";
 import getCurrentUser from "./actions/getCurrentUser";
 import RentModal from "./components/modals/RentModal";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import SearchModal from "./components/modals/SearchModal";
 
 
 export const metadata: Metadata = {
@@ -25,17 +28,19 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const currentUser = await getCurrentUser();
+  // const currentUser = await getCurrentUser();
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">
       <body className = {font.className}>
         <ClientOnly>
           <ToasterProvider />
+          <SearchModal />
           <RentModal />
           <LoginModal/>
           <RegisterModal />
-          <Navbar currentUser={currentUser} />
+          <Navbar session={session} />
         </ClientOnly>
         <div className="pb-20 pt-28">
           {children}

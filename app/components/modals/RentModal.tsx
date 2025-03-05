@@ -241,7 +241,7 @@ function RentModal({}: Props) {
       <div className="flex flex-col gap-8">
         <Heading
           title="Now, set your price"
-          subtitle="How much do you charge per night?"
+          subtitle="What is the price for one night's stay at your accommodation?"
         />
         <Input
           id="price"

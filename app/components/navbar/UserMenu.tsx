@@ -8,14 +8,20 @@ import useLoginModal from "@/app/hooks/useLoginModal";
 import { signOut } from "next-auth/react";
 import { safeUser } from "@/app/types";
 import useRentModal from "@/app/hooks/useRentModal";
+import getCurrentUser from "@/app/actions/getCurrentUser";
+import router from "next/router";
+import { Session } from "next-auth";
+import { useRouter } from "next/navigation";
+
 
 interface UserMenuProps{
-    currentUser?: safeUser | null
+    session?: Session | null
 }
 
 const UserMenu:React.FC<UserMenuProps> = ({
-    currentUser
+    session
 }) => {
+    const router = useRouter();
     const registerModal = useRegisterModal();
     const LoginModal = useLoginModal();
     const rentModal  = useRentModal();
@@ -28,11 +34,13 @@ const UserMenu:React.FC<UserMenuProps> = ({
     },[]);
 
     const onRent = useCallback(() =>{
-        if(!currentUser){
+        if(!session){
             return LoginModal.onOpen();
         }
         rentModal.onOpen();
-    },[currentUser, LoginModal, rentModal]);
+    },[session, LoginModal, rentModal]);
+
+    // const session = getCurrentUser();
 
     return(
        <div className="relative">
@@ -45,7 +53,7 @@ const UserMenu:React.FC<UserMenuProps> = ({
             className="p-4 md:px-2 md:py-1 border-[1px] border-neutral-300 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition">
                 <AiOutlineMenu />
                 <div className="hidden md:block">
-                    <Avatar src={currentUser?.image} />
+                    <Avatar src={session?.user.image} />
                     {/* <div className="bg-black text-white rounded-full border border-gray-300 overflow-hidden">
                         * <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 relative">
                         <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clipRule="evenodd" />
@@ -57,22 +65,22 @@ const UserMenu:React.FC<UserMenuProps> = ({
         {isOpen && (
             <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
                 <div className="flex flex-col cursor-pointer">
-                 {currentUser ? (
+                 {session ? (
                     <>
                     <MenuItem 
-                    onClick={()=>{}} 
+                    onClick={()=> router.push("/trips")} 
                     label="My trips"
                     />
                     <MenuItem 
-                    onClick={()=>{}}
+                    onClick={()=> router.push("/favorites")}
                     label="My favorites"
                     />
                     <MenuItem 
-                    onClick={()=>{}}
+                    onClick={()=> router.push("/reservations")}
                     label="My reservations"
                     />
                     <MenuItem 
-                    onClick={()=>{}} 
+                    onClick={()=> router.push("/properties")} 
                     label="My properties"
                     />
                     <MenuItem 
